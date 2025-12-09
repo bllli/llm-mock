@@ -84,6 +84,7 @@ func main() {
 	}
 
 	internal.InitTokens()
+	internal.InitMetrics()
 
 	engine := internal.NewServer()
 
@@ -116,11 +117,18 @@ func main() {
 	stop()
 	internal.Logger.Info("shutting down gracefully, press Ctrl+C again to force")
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-	if err := server.Shutdown(ctx); err != nil {
-		internal.Logger.Error("server shutdown", zap.Error(err))
+	// Mark server as shutting down to stop accepting new requests
+	internal.SetShuttingDown()
+	internal.Logger.Info("Server marked as shutting down, no longer accepting new requests")
+
+	// Close the listener to stop accepting new connections
+	if err := server.Close(); err != nil {
+		internal.Logger.Error("server close error", zap.Error(err))
 	}
+
+	// Wait for all active requests to complete (up to 30 seconds)
+	internal.Logger.Info("Waiting for active requests to complete...")
+	internal.WaitForAllRequests(30 * time.Second)
 
 	internal.Logger.Info("server exiting")
 }

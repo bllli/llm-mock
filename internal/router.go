@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 func ErrorLogger(c *gin.Context) {
@@ -28,6 +29,9 @@ func NewServer() *gin.Engine {
 	engine := gin.New()
 	engine.Use(gin.Recovery())
 	engine.Use(ErrorLogger)
+
+	// Prometheus metrics endpoint
+	engine.GET("/metrics", gin.WrapH(promhttp.Handler()))
 
 	v1Group := engine.Group("/v1")
 	{
