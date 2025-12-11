@@ -58,7 +58,7 @@ PLATFORM="linux/${ARCH}"
 TARGETOS="linux"
 
 # 构建镜像，镜像名称包含架构信息
-IMAGE_NAME="silinex-router-gateway-${ARCH}:${TAG}"
+IMAGE_NAME="llm-mock-${ARCH}:${TAG}"
 docker build --platform=${PLATFORM} -t ${IMAGE_NAME} --build-arg TARGETARCH=${ARCH} --build-arg TARGETOS=${TARGETOS} -f Dockerfile .
 echo "Built image:"
 echo "${IMAGE_NAME}"
