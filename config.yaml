@@ -1,9 +1,9 @@
 ---
 server:
-  port: 9998
+  port: 8000
   read_timeout: 30
   write_timeout: 1800
-  pprof_port: 6070
+  pprof_port: 8001
   pprof_enabled: true
 common:
   tokens_file: tokens.json
